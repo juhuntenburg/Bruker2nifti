@@ -21,9 +21,8 @@ function pars = get_pars(path)
     pars.n_acq       =   '';
     pars.TR          =   0;
     
-    
-    matching    =   ['.*Di?a?([0-9]+).*\' filesep '.*'];
-    if isunix 
+    matching    =   ['.*([0-9]+).*\' filesep '.*'];
+    if isunix
         [a b c d e f]   =   regexpi(path,matching,'match','tokens');
     else
         [a b c d e f]   =   regexpi(path,matching,'match','split');
@@ -99,6 +98,10 @@ function pars = get_pars(path)
             case '##$ACQ_phase1_offset' 
                read         =   strread(fgetl(fid),'%f','delimiter','\\ '); 
                pars.offset(2)    =   read(1);  
+            case '##$ACQ_repetition_time'
+                if ~exist('TR','var')
+                    pars.TR          =   eval(fgetl(fid));
+                end
         end
     end
     fclose(fid);
